@@ -52,6 +52,67 @@ var wallet = (function() {
 
 })();
 
+var racedata = (function() {
+
+	var racedata = {};
+
+	var dataSource = "races.json";
+
+	function getRaceData() {
+		makeRequest(dataSource, displayRaceData, displayError);
+	}
+
+	function displayRaceData(data) {
+		console.log(data);
+	}
+
+	function displayError(status, statusText) {
+		console.log(status, statusText)
+	}
+
+	function createHttpRequestObject() {
+		if (window.XMLHttpRequest) {
+			return new XMLHttpRequest;
+		} else if (window.ActiveXObject) {
+			try {
+				return new ActiveXObject("Msxml2.XMLHTTP");
+			}
+			catch(e) {
+				try {
+					return new ActiveXObject("Microsoft.XMLHTTP");
+				}
+				catch(e) {
+					console.log(e.message);
+				}
+			}
+			
+		} 
+	}
+
+	function makeRequest(url, success, failure) {
+		var httpRequest = createHttpRequestObject();
+		httpRequest.onreadystatechange = function() {
+			if (httpRequest.readyState === 4) {
+				if (httpRequest.status === 200 || !failure) {
+					success(httpRequest.responseText);
+				} else if (failure) {
+					failure(httpRequest.status, httpRequest.statusText);
+				}
+			}
+		};
+		httpRequest.open("GET", url, true);
+	  httpRequest.send(null);
+	}
+
+	racedata.init = function() {
+		getRaceData();
+	};
+
+	return racedata;
+
+})();
+
 window.onload = function() {
 	wallet.init();
+	racedata.init();
 };
