@@ -52,22 +52,34 @@ var wallet = (function() {
 
 })();
 
-var racedata = (function() {
+var raceData = (function() {
 
-	var racedata = {};
+	var raceData = {};
 
 	var dataSource = "races.json";
 
+	var races = [];
+
+	var container;
+
 	function getRaceData() {
-		makeRequest(dataSource, displayRaceData, displayError);
+		makeRequest(dataSource, populateRacesArray, handleError);
 	}
 
-	function displayRaceData(data) {
-		console.log(data);
+	function getRacesContainer() {
+		container = document.querySelector('.races');
 	}
 
-	function displayError(status, statusText) {
-		console.log(status, statusText)
+	function populateRacesArray(data) {
+		var raceData = JSON.parse(data);
+		races = raceData.races;
+	}
+
+	function handleError() {
+		var messageContainer = document.createElement('p');
+		var messageText = document.createTextNode('Sorry, the race information cannot be displayed right now.');
+		messageContainer.appendChild(messageText);
+		container.appendChild(messageContainer);
 	}
 
 	function createHttpRequestObject() {
@@ -96,7 +108,7 @@ var racedata = (function() {
 				if (httpRequest.status === 200 || !failure) {
 					success(httpRequest.responseText);
 				} else if (failure) {
-					failure(httpRequest.status, httpRequest.statusText);
+					failure();
 				}
 			}
 		};
@@ -104,15 +116,16 @@ var racedata = (function() {
 	  httpRequest.send(null);
 	}
 
-	racedata.init = function() {
+	raceData.init = function() {
 		getRaceData();
+		getRacesContainer();
 	};
 
-	return racedata;
+	return raceData;
 
 })();
 
 window.onload = function() {
 	wallet.init();
-	racedata.init();
+	raceData.init();
 };
