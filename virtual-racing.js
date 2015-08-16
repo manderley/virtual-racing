@@ -135,7 +135,7 @@ var raceData = (function() {
 			raceContainer.setAttribute('class', 'race');
 			
 			// display race name
-			var nameElement = createTextElement('h1', 'race-heading', this.name);
+			var nameElement = utils.createTextElement('h1', 'race-heading', this.name);
 			raceContainer.appendChild(nameElement);
 
 			// display race runners
@@ -153,6 +153,7 @@ var raceData = (function() {
 	}
 
 	function Runner(runner) {
+		this.id = runner.id;
 		this.number = runner.number;
 		this.name = runner.name;
 		this.jockey = runner.jockey;
@@ -160,16 +161,22 @@ var raceData = (function() {
 		this.price = runner.price;
 		this.display = function() {
 			var runnerContainer = document.createElement('li');
+			runnerContainer.setAttribute('id', this.id);
 
-			var numberElement = createTextElement('span', 'runner-number', this.number);
-			var nameElement = createTextElement('span', 'runner-name', this.name);
-			var jockeyElement = createTextElement('span', 'runner-jockey', this.jockey);
+			var numberElement = utils.createTextElement('span', 'runner-number', this.number);
+			var nameElement = utils.createTextElement('span', 'runner-name', this.name);
+			var jockeyElement = utils.createTextElement('span', 'runner-jockey', this.jockey);
 			var colours = new Image();
 			colours.src = imagesPath + this.colours;
 			colours.setAttribute('alt', this.jockey);
-			var priceElement = createTextElement('button', 'runner-bet-button', this.price);
-			priceElement.setAttribute('data-name', this.name);
-			priceElement.setAttribute('data-price', this.price);
+			var priceElement = utils.createTextElement('button', 'runner-bet-button', this.price);
+			
+			// use closure to capture values of this runner's id, name and price
+			priceElement.onclick = (function(id, name, price, button) {
+				return function() {
+					addToBetslip(id, name, price, button);
+				}
+			})(this.id, this.name, this.price, priceElement);
 			
 			runnerContainer.appendChild(numberElement);
 			runnerContainer.appendChild(colours);
@@ -181,12 +188,21 @@ var raceData = (function() {
 		}
 	}
 
-	function createTextElement(el, cssClass, text) {
-		var element = document.createElement(el);
-		var elementContent = document.createTextNode(text);
-		element.setAttribute('class', cssClass);
-		element.appendChild(elementContent);
-		return element;
+	function addToBetslip(id, name, price, button) {
+		// create selection
+		betslip.createSelection(id, name, price);
+
+		// add selected class to runner
+		var selectedRunner = document.getElementById(id);
+		selectedRunner.classList.add('selected');
+
+		// disable button
+		// as dynamic disabled state doesn't persist after page refresh 
+		// (except in Firefox), using CSS to simulate visual disabled effect
+		// and setting onclick handler to null 
+		button.classList.add('disabled');
+		button.onclick = null;
+
 	}
 
 	raceData.init = function() {
@@ -200,9 +216,81 @@ var raceData = (function() {
 
 var betslip = (function() {
 
+	var betslip = {};
+
+	var selectionsContainer;
+
+	var bets = [];
+	var selections = [];
+
+	function Selection(id, name, price) {
+		this.id = id;
+		this.name = name;
+		this.price = price;
+
+		this.display = function() {
+			var selectionContainer = document.createElement('li');
+			selectionContainer.setAttribute('id', this.id);
+
+			var nameElement = utils.createTextElement('label', 'selection-name', this.name);
+			nameElement.setAttribute('for', 'selection' + this.id);
+			var priceElement = utils.createTextElement('span', 'selection-price', this.price);
+			var inputElement = utils.createTextElement('input', 'selection-stake');
+			inputElement.setAttribute('type', 'text');
+			inputElement.setAttribute('id', 'selection' + this.id);
+
+			selectionContainer.appendChild(nameElement);
+			selectionContainer.appendChild(priceElement);
+			selectionContainer.appendChild(inputElement);
+
+			return selectionContainer;
+		};
+
+		this.save = function() {
+
+		}
+
+	}
+
+	function getSelectionsContainer() {
+		selectionsContainer = document.querySelector('.betslip-selections');
+	}
+
+	betslip.createSelection = function(id, name, price) {
+		console.log('create selection');
+		var selection = new Selection(id, name, price);
+		selections.push(selection);
+		selectionsContainer.appendChild(selection.display());
+	};
+
+	betslip.init = function() {
+		getSelectionsContainer();
+	}
+
+	return betslip;
+
+})();
+
+var utils = (function() {
+
+	var utils = {};
+
+	utils.createTextElement = function (el, cssClass, text) {
+		var element = document.createElement(el);
+		if (text) {
+			var elementContent = document.createTextNode(text);
+			element.appendChild(elementContent);
+		}
+		element.setAttribute('class', cssClass);
+		return element;
+	};
+
+	return utils;
+
 })();
 
 window.onload = function() {
 	wallet.init();
 	raceData.init();
+	betslip.init();
 };
