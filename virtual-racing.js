@@ -63,16 +63,21 @@ var raceData = (function() {
 	var container;
 
 	function getRaceData() {
-		makeRequest(dataSource, populateRacesArray, handleError);
+		makeRequest(dataSource, populateRaces, handleError);
 	}
 
 	function getRacesContainer() {
 		container = document.querySelector('.races');
 	}
 
-	function populateRacesArray(data) {
+	function populateRaces(data) {
 		var raceData = JSON.parse(data);
-		races = raceData.races;
+		for (var i = 0; i < raceData.races.length; i++) {
+			races.push(new Race(raceData.races[i]));
+		}
+		for (var i = 0; i < races.length; i++) {
+			container.appendChild(races[i].display());
+		}
 	}
 
 	function handleError() {
@@ -114,6 +119,21 @@ var raceData = (function() {
 		};
 		httpRequest.open("GET", url, true);
 	  httpRequest.send(null);
+	}
+
+	function Race(race) {
+		this.name = race.name;
+		this.runners = race.runners;
+		this.display = function() {
+			var section = document.createElement('section');
+			var h1 = document.createElement('h1');
+			var h1Text = document.createTextNode(this.name);
+			section.setAttribute('class', 'race');
+			h1.setAttribute('class', 'race-heading');
+			h1.appendChild(h1Text);
+			section.appendChild(h1);
+			return section;
+		}
 	}
 
 	raceData.init = function() {
