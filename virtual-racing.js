@@ -57,10 +57,9 @@ var raceData = (function() {
 	var raceData = {};
 
 	var dataSource = "races.json";
-
 	var races = [];
-
 	var container;
+	var imagesPath = "images/"
 
 	function getRaceData() {
 		makeRequest(dataSource, populateRaces, handleError);
@@ -166,7 +165,7 @@ var raceData = (function() {
 			var nameElement = createTextElement('span', 'runner-name', this.name);
 			var jockeyElement = createTextElement('span', 'runner-jockey', this.jockey);
 			var colours = new Image();
-			colours.src = this.colours;
+			colours.src = imagesPath + this.colours;
 			colours.setAttribute('alt', this.jockey);
 			var priceElement = createTextElement('button', 'runner-bet-button', this.price);
 			priceElement.setAttribute('data-name', this.name);
