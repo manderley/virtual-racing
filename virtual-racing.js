@@ -125,10 +125,12 @@ var raceData = (function() {
 		this.name = race.name;
 		this.runners = [];
 
-		for (var i = 0; i < race.runners.length; i++) {
-			this.runners.push(new Runner(race.runners[i]));
+		if (race.runners) {
+			for (var i = 0; i < race.runners.length; i++) {
+				this.runners.push(new Runner(race.runners[i]));
+			}
 		}
-
+		
 		this.display = function() {
 			var raceContainer = document.createElement('section');
 			raceContainer.setAttribute('class', 'race');
@@ -138,13 +140,15 @@ var raceData = (function() {
 			raceContainer.appendChild(nameElement);
 
 			// display race runners
-			var runnersContainer = document.createElement('ol');
-			runnersContainer.setAttribute('class', 'race-runners');
-			for (var i = 0; i < this.runners.length; i++) {
-				runnersContainer.appendChild(this.runners[i].display());
+			if (this.runners.length) {
+				var runnersContainer = document.createElement('ol');
+				runnersContainer.setAttribute('class', 'race-runners');
+				for (var i = 0; i < this.runners.length; i++) {
+					runnersContainer.appendChild(this.runners[i].display());
+				}
+				raceContainer.appendChild(runnersContainer);
 			}
-			raceContainer.appendChild(runnersContainer);
-
+			
 			return raceContainer;
 		}
 	}
