@@ -123,17 +123,67 @@ var raceData = (function() {
 
 	function Race(race) {
 		this.name = race.name;
-		this.runners = race.runners;
-		this.display = function() {
-			var section = document.createElement('section');
-			var h1 = document.createElement('h1');
-			var h1Text = document.createTextNode(this.name);
-			section.setAttribute('class', 'race');
-			h1.setAttribute('class', 'race-heading');
-			h1.appendChild(h1Text);
-			section.appendChild(h1);
-			return section;
+		this.runners = [];
+
+		for (var i = 0; i < race.runners.length; i++) {
+			this.runners.push(new Runner(race.runners[i]));
 		}
+
+		this.display = function() {
+			var raceContainer = document.createElement('section');
+			raceContainer.setAttribute('class', 'race');
+			
+			// display race name
+			var nameElement = createTextElement('h1', 'race-heading', this.name);
+			raceContainer.appendChild(nameElement);
+
+			// display race runners
+			var runnersContainer = document.createElement('ol');
+			runnersContainer.setAttribute('class', 'race-runners');
+			for (var i = 0; i < this.runners.length; i++) {
+				runnersContainer.appendChild(this.runners[i].display());
+			}
+			raceContainer.appendChild(runnersContainer);
+
+			return raceContainer;
+		}
+	}
+
+	function Runner(runner) {
+		this.number = runner.number;
+		this.name = runner.name;
+		this.jockey = runner.jockey;
+		this.colours = runner.colours;
+		this.price = runner.price;
+		this.display = function() {
+			var runnerContainer = document.createElement('li');
+
+			var numberElement = createTextElement('span', 'runner-number', this.number);
+			var nameElement = createTextElement('span', 'runner-name', this.name);
+			var jockeyElement = createTextElement('span', 'runner-jockey', this.jockey);
+			var colours = new Image();
+			colours.src = this.colours;
+			colours.setAttribute('alt', this.jockey);
+			var priceElement = createTextElement('button', 'runner-bet-button', this.price);
+			priceElement.setAttribute('data-name', this.name);
+			priceElement.setAttribute('data-price', this.price);
+			
+			runnerContainer.appendChild(numberElement);
+			runnerContainer.appendChild(colours);
+			runnerContainer.appendChild(nameElement);
+			runnerContainer.appendChild(jockeyElement);
+			runnerContainer.appendChild(priceElement);
+			
+			return runnerContainer;
+		}
+	}
+
+	function createTextElement(el, cssClass, text) {
+		var element = document.createElement(el);
+		var elementContent = document.createTextNode(text);
+		element.setAttribute('class', cssClass);
+		element.appendChild(elementContent);
+		return element;
 	}
 
 	raceData.init = function() {
