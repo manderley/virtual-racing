@@ -198,6 +198,10 @@ var raceData = (function() {
 
 })();
 
+var betslip = (function() {
+
+})();
+
 window.onload = function() {
 	wallet.init();
 	raceData.init();
