@@ -161,7 +161,7 @@ var raceData = (function() {
 		this.price = runner.price;
 		this.display = function() {
 			var runnerContainer = document.createElement('li');
-			runnerContainer.setAttribute('id', this.id);
+			runnerContainer.setAttribute('id', 'runner-' + this.id);
 
 			var numberElement = utils.createTextElement('span', 'runner-number', this.number);
 			var nameElement = utils.createTextElement('span', 'runner-name', this.name);
@@ -170,30 +170,31 @@ var raceData = (function() {
 			colours.src = imagesPath + this.colours;
 			colours.setAttribute('alt', this.jockey);
 			var priceElement = utils.createTextElement('button', 'runner-bet-button', this.price);
-			
-			// use closure to capture values of this runner's id, name and price
-			priceElement.onclick = (function(id, name, price, button) {
-				return function() {
-					addToBetslip(id, name, price, button);
-				}
-			})(this.id, this.name, this.price, priceElement);
+			priceElement.setAttribute('id', 'button-' + this.id);
 			
 			runnerContainer.appendChild(numberElement);
 			runnerContainer.appendChild(colours);
 			runnerContainer.appendChild(nameElement);
 			runnerContainer.appendChild(jockeyElement);
 			runnerContainer.appendChild(priceElement);
+
+			// use closure to capture values of this runner's id, name and price
+			priceElement.onclick = (function(id, name, price, button) {
+				return function() {
+					raceData.addToBetslip(id, name, price, button);
+				}
+			})(this.id, this.name, this.price, priceElement);
 			
 			return runnerContainer;
 		}
 	}
 
-	function addToBetslip(id, name, price, button) {
+	raceData.addToBetslip = function(id, name, price, button) {
 		// create selection
 		betslip.createSelection(id, name, price);
 
 		// add selected class to runner
-		var selectedRunner = document.getElementById(id);
+		var selectedRunner = document.getElementById('runner-' + id);
 		selectedRunner.classList.add('selected');
 
 		// disable button
@@ -203,7 +204,7 @@ var raceData = (function() {
 		button.classList.add('disabled');
 		button.onclick = null;
 
-	}
+	};
 
 	raceData.init = function() {
 		getRaceData();
@@ -220,7 +221,7 @@ var betslip = (function() {
 
 	var selectionsContainer;
 
-	var bets = [];
+	var selectionsPlaced = [];
 	var selections = [];
 
 	function Selection(id, name, price) {
@@ -230,7 +231,7 @@ var betslip = (function() {
 
 		this.display = function() {
 			var selectionContainer = document.createElement('li');
-			selectionContainer.setAttribute('id', this.id);
+			selectionContainer.setAttribute('id', 'selection-' + this.id);
 
 			var nameElement = utils.createTextElement('label', 'selection-name', this.name);
 			nameElement.setAttribute('for', 'selection' + this.id);
@@ -238,10 +239,18 @@ var betslip = (function() {
 			var inputElement = utils.createTextElement('input', 'selection-stake');
 			inputElement.setAttribute('type', 'text');
 			inputElement.setAttribute('id', 'selection' + this.id);
+			var removeElement = utils.createTextElement('span', 'selection-delete', 'x');
 
 			selectionContainer.appendChild(nameElement);
 			selectionContainer.appendChild(priceElement);
 			selectionContainer.appendChild(inputElement);
+			selectionContainer.appendChild(removeElement);
+
+			removeElement.onclick = (function(selection) {
+				return function() {
+					removeSelection(selection);
+				}
+			})(this);
 
 			return selectionContainer;
 		};
@@ -254,6 +263,32 @@ var betslip = (function() {
 
 	function getSelectionsContainer() {
 		selectionsContainer = document.querySelector('.betslip-selections');
+	}
+
+	function removeSelection(selection) {
+		// remove from betslip
+		var selectionId = document.getElementById('selection-' + selection.id);
+		selectionsContainer.removeChild(selectionId);
+
+		// remove from selections array
+		var index = selections.indexOf(selection);
+		if (index > -1) {
+			console.log('removing selection from array');
+			selections.splice(index, 1);
+		}
+
+		// re-enable button on racecard
+		var buttonId = document.getElementById('button-' + selection.id);
+		buttonId.classList.remove('disabled');
+		buttonId.onclick = (function(id, name, price, button) {
+			return function() {
+				raceData.addToBetslip(id, name, price, button);
+			}
+		})(selection.id, selection.name, selection.price, buttonId);
+
+		// remove selected class from runner
+		var runnerId = document.getElementById('runner-' + selection.id);
+		runnerId.classList.remove('selected');
 	}
 
 	betslip.createSelection = function(id, name, price) {
