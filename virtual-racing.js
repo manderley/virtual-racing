@@ -293,6 +293,9 @@ var betslip = (function() {
 		runnerId.classList.remove('selected');
 
 		// if removal of selection results in empty betslip, remove Cancel and Place Bets buttons
+		if (!selections.length) {
+			removeButtons();
+		}
 	}
 
 	function displayButtons() {
@@ -302,6 +305,11 @@ var betslip = (function() {
 		buttonsContainer.appendChild(cancelButton);
 		buttonsContainer.appendChild(placeBetsButton);
 		betslipContainer.appendChild(buttonsContainer);
+	}
+
+	function removeButtons() {
+		var buttonsContainer = document.querySelector('.betslip-buttons');
+		betslipContainer.removeChild(buttonsContainer);
 	}
 
 	betslip.createSelection = function(id, name, price) {
