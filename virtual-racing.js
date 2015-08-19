@@ -219,6 +219,7 @@ var betslip = (function() {
 
 	var betslip = {};
 
+	var betslipContainer;
 	var selectionsContainer;
 
 	var selectionsPlaced = [];
@@ -261,7 +262,8 @@ var betslip = (function() {
 
 	}
 
-	function getSelectionsContainer() {
+	function getBetslipElements() {
+		betslipContainer = document.querySelector('.betslip');
 		selectionsContainer = document.querySelector('.betslip-selections');
 	}
 
@@ -289,17 +291,31 @@ var betslip = (function() {
 		// remove selected class from runner
 		var runnerId = document.getElementById('runner-' + selection.id);
 		runnerId.classList.remove('selected');
+
+		// if removal of selection results in empty betslip, remove Cancel and Place Bets buttons
+	}
+
+	function displayButtons() {
+		var buttonsContainer = utils.createTextElement('fieldset', 'betslip-buttons');
+		var cancelButton = utils.createTextElement('button', 'buttons-cancel', 'Cancel');
+		var placeBetsButton = utils.createTextElement('button', 'buttons-place-bets', 'Place Bets');
+		buttonsContainer.appendChild(cancelButton);
+		buttonsContainer.appendChild(placeBetsButton);
+		betslipContainer.appendChild(buttonsContainer);
 	}
 
 	betslip.createSelection = function(id, name, price) {
-		console.log('create selection');
 		var selection = new Selection(id, name, price);
 		selections.push(selection);
 		selectionsContainer.appendChild(selection.display());
+		// on adding the first selection make sure Cancel and Place Bets buttons are displayed
+		if (selections.length === 1) {
+			displayButtons();
+		}
 	};
 
 	betslip.init = function() {
-		getSelectionsContainer();
+		getBetslipElements();
 	}
 
 	return betslip;
