@@ -238,7 +238,9 @@ var betslip = (function() {
 			nameElement.setAttribute('for', 'selection' + this.id);
 			var priceElement = utils.createTextElement('span', 'selection-price', this.price);
 			var inputElement = utils.createTextElement('input', 'selection-stake');
-			inputElement.setAttribute('type', 'text');
+			inputElement.setAttribute('type', 'number');
+			inputElement.setAttribute('min', '1');
+			inputElement.setAttribute('step', '1');
 			inputElement.setAttribute('id', 'selection' + this.id);
 			var removeElement = utils.createTextElement('span', 'selection-delete', 'x');
 
