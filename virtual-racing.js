@@ -298,6 +298,15 @@ var betslip = (function() {
 		}
 	}
 
+	function removeAllSelections() {
+		// don't need to increment the value of i as each call to removeSelection()
+		// removes an item from the selections array; so on each iteration we want 
+		// to operate on the first item in the selections array
+		for (var i = 0; i < selections.length;) {
+			removeSelection(selections[i]);
+		}
+	}
+
 	function displayButtons() {
 		var buttonsContainer = utils.createTextElement('fieldset', 'betslip-buttons');
 		var cancelButton = utils.createTextElement('button', 'buttons-cancel', 'Cancel');
@@ -305,6 +314,7 @@ var betslip = (function() {
 		buttonsContainer.appendChild(cancelButton);
 		buttonsContainer.appendChild(placeBetsButton);
 		betslipContainer.appendChild(buttonsContainer);
+		cancelButton.onclick = removeAllSelections;
 	}
 
 	function removeButtons() {
