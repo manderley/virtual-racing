@@ -255,7 +255,8 @@ var betslip = (function() {
 	var stakeMessage = 'Enter a stake and then place your bets. The stake must be a whole number. If it includes decimal places it will be rounded down to the nearest whole number.';
 	var stakeErrorMessage = 'Please enter a valid stake amount for each selection.';
 	var fundsErrorMessage = 'You do not have sufficient funds. Please make sure your total bets amount does not exceed your wallet balance.';
-
+	var betsPlacedMessage = 'Your bets have been placed. Your selections are listed below. Please click on the "Start Race" button to start the race. Good luck!';
+	
 	var selectionsPlaced = [];
 	var selections = [];
 
@@ -407,7 +408,27 @@ var betslip = (function() {
 		// save selections in local storage?
 
 		// display placed bets
+		showMessage(betsPlacedMessage);
 
+		// remove buttons
+		removeButtons();
+
+		// update selections array with potential win value
+		for (var i = 0; i < selections.length; i++) {
+			var potentialWin = calculatePotentialWin(selections[i].price, selections[i].value);
+			selections[i].potentialWin = potentialWin;
+		}
+
+		// change display of selections in betslip:
+		// - remove delete button
+		// - disable input field
+		// - display potential win amount
+
+	}
+
+	function calculatePotentialWin(price, stake) {
+		var potentialWin = price * stake;
+		return potentialWin;
 	}
 
 	function enableMessageDisplay() {
