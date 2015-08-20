@@ -3,3 +3,12 @@ html {
 	color: rgb(77, 77, 77);
 	font-size: 16px;
 }
+
+.betslip-buttons,
+.betslip-message {
+	display: none;
+}
+
+.show {
+	display: block;
+}

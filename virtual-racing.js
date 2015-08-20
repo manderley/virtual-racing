@@ -1,3 +1,5 @@
+"use strict";
+
 var wallet = (function() {
 
 	var wallet = {};
@@ -10,6 +12,8 @@ var wallet = (function() {
 	// if it is, display the balance
 	// if it isn't, create wallet and display the balance
 	function initialiseWallet() {
+		balanceContainer = document.querySelector('.wallet-balance');
+
 		if (!localStorage.getItem('wallet')) {
 			createWallet(initialBalance);
 		}
@@ -23,11 +27,11 @@ var wallet = (function() {
 		localStorage.setItem('wallet', JSON.stringify(wallet));
 	}
 
-	function displayBalance() {
-		balanceContainer = document.querySelector('.wallet-balance');
-		var balance = getBalance();
-		var balanceText = document.createTextNode(balance + ' ' + currency);
-		balanceContainer.appendChild(balanceText);
+	// newBalance will only be passed if updating balance after placing bet
+	function displayBalance(newBalance) {
+		var balance = newBalance ? newBalance : getBalance();
+		var balanceText = balance + ' ' + currency;
+		balanceContainer.innerHTML = balanceText;
 	}
 
 	function getBalance() {
@@ -44,8 +48,30 @@ var wallet = (function() {
 		return balance;
 	}
 
+	function updateWallet(newBalance) {
+		var wallet = {
+			balance: newBalance
+		};
+		localStorage.setItem('wallet', JSON.stringify(wallet));
+	}
+
+	function processNewBalance(betTotal) {
+		// calculate new balance, update wallet and display new balance on page
+		var newBalance = getBalance() - betTotal;
+		updateWallet(newBalance);
+		displayBalance(newBalance);
+	}
+
+	wallet.returnBalance = function() {
+		return getBalance();
+	};
+
+	wallet.updateBalance = function(betTotal) {
+		processNewBalance(betTotal);
+	};
+
 	wallet.init = function() {
-		initialiseWallet()
+		initialiseWallet();
 	};
 
 	return wallet;
@@ -221,9 +247,20 @@ var betslip = (function() {
 
 	var betslipContainer;
 	var selectionsContainer;
+	var buttonsContainer;
+	var cancelButton;
+	var placeBetsButton;
+	var messageContainer;
+
+	var stakeMessage = 'Enter a stake and then place your bets. The stake must be a whole number. If it includes decimal places it will be rounded down to the nearest whole number.';
+	var stakeErrorMessage = 'Please enter a valid stake amount for each selection.';
+	var fundsErrorMessage = 'You do not have sufficient funds. Please make sure your total bets amount does not exceed your wallet balance.';
 
 	var selectionsPlaced = [];
 	var selections = [];
+
+	var totalBetAmount = 0;
+	var validInput = true;
 
 	function Selection(id, name, price) {
 		this.id = id;
@@ -233,15 +270,16 @@ var betslip = (function() {
 		this.display = function() {
 			var selectionContainer = document.createElement('li');
 			selectionContainer.setAttribute('id', 'selection-' + this.id);
+			selectionContainer.setAttribute('class', 'betslip-selection');
 
 			var nameElement = utils.createTextElement('label', 'selection-name', this.name);
-			nameElement.setAttribute('for', 'selection' + this.id);
+			nameElement.setAttribute('for', this.id);
 			var priceElement = utils.createTextElement('span', 'selection-price', this.price);
 			var inputElement = utils.createTextElement('input', 'selection-stake');
 			inputElement.setAttribute('type', 'number');
 			inputElement.setAttribute('min', '1');
 			inputElement.setAttribute('step', '1');
-			inputElement.setAttribute('id', 'selection' + this.id);
+			inputElement.setAttribute('id', this.id);
 			var removeElement = utils.createTextElement('span', 'selection-delete', 'x');
 
 			selectionContainer.appendChild(nameElement);
@@ -258,15 +296,15 @@ var betslip = (function() {
 			return selectionContainer;
 		};
 
-		this.save = function() {
-
-		}
-
 	}
 
 	function getBetslipElements() {
 		betslipContainer = document.querySelector('.betslip');
 		selectionsContainer = document.querySelector('.betslip-selections');
+		buttonsContainer = document.querySelector('.betslip-buttons');
+		cancelButton = document.querySelector('.buttons-cancel');
+		placeBetsButton = document.querySelector('.buttons-place-bets');
+		messageContainer = document.querySelector('.betslip-message');
 	}
 
 	function removeSelection(selection) {
@@ -295,8 +333,10 @@ var betslip = (function() {
 		runnerId.classList.remove('selected');
 
 		// if removal of selection results in empty betslip, remove Cancel and Place Bets buttons
+		// and stake message
 		if (!selections.length) {
 			removeButtons();
+			messageContainer.classList.remove('show');
 		}
 	}
 
@@ -304,24 +344,108 @@ var betslip = (function() {
 		// don't need to increment the value of i as each call to removeSelection()
 		// removes an item from the selections array; so on each iteration we want 
 		// to operate on the first item in the selections array
+		console.log('removing all selections');
 		for (var i = 0; i < selections.length;) {
 			removeSelection(selections[i]);
 		}
+		messageContainer.classList.remove('show');
 	}
 
 	function displayButtons() {
-		var buttonsContainer = utils.createTextElement('fieldset', 'betslip-buttons');
-		var cancelButton = utils.createTextElement('button', 'buttons-cancel', 'Cancel');
-		var placeBetsButton = utils.createTextElement('button', 'buttons-place-bets', 'Place Bets');
-		buttonsContainer.appendChild(cancelButton);
-		buttonsContainer.appendChild(placeBetsButton);
-		betslipContainer.appendChild(buttonsContainer);
-		cancelButton.onclick = removeAllSelections;
+		buttonsContainer.classList.add('show');
+
+		cancelButton.onclick = function(event) {
+			event.preventDefault();
+			removeAllSelections();
+		};
+
+		placeBetsButton.onclick = function(event) {
+			event.preventDefault();
+			validateBets();
+		};
 	}
 
 	function removeButtons() {
-		var buttonsContainer = document.querySelector('.betslip-buttons');
-		betslipContainer.removeChild(buttonsContainer);
+		buttonsContainer.classList.remove('show');
+		cancelButton.onclick = null;
+		placeBetsButton.onclick = null;
+	}
+
+	function validateBets() {
+		//console.log('validating bets');
+
+		// if all inputs are valid, check total amount against wallet balance
+		// if balance is sufficient, place bets and update wallet balance
+		// otherwise show error message
+
+		// reset global variables before getting input values
+		validInput = true;
+		totalBetAmount = 0;
+
+		getInputValues();
+		console.log('validInput: ', validInput);
+		console.log('totalBetAmount: ', totalBetAmount);
+
+		if (validInput) {
+			console.log('input is valid');
+			console.log('wallet balance: ', wallet.returnBalance());
+			if (totalBetAmount <= wallet.returnBalance()) {
+				console.log('and we have sufficient funds');
+				placeBets();
+				wallet.updateBalance(totalBetAmount);
+			} else {
+				console.log('but we do not have sufficient funds');
+				showMessage(fundsErrorMessage);
+			}
+		} else {
+			showMessage(stakeErrorMessage);
+		}
+	}
+
+	function placeBets() {
+		console.log('placing bets');
+		// save selections in local storage?
+
+		// display placed bets
+
+	}
+
+	function enableMessageDisplay() {
+		messageContainer.classList.add('show');
+	}
+
+	function showMessage(message) {
+		messageContainer.innerHTML = message;
+	}
+
+	function getInputValues() {
+		// iterate over selections in betslip
+		// if stake input value is valid, add to relevant item in selections array
+		// and add value to totalBetAmount
+		// otherwise set invalidInput flag to true
+		var betslipSelections = document.getElementsByClassName('selection-stake');
+		for (var i = 0; i < betslipSelections.length; i++) {
+			var stakeValue = parseInt(betslipSelections[i].value, 10);
+			var stakeId = betslipSelections[i].id;
+			if (isValid(stakeValue)) {
+				for (var j = 0; j < selections.length; j++) {
+					if (selections[j].id === stakeId) {
+						selections[j].value = stakeValue;
+						totalBetAmount = totalBetAmount + stakeValue;
+					}
+				}
+			} else {
+				betslipSelections[i].value = 0;
+				validInput = false;
+			}
+
+		}
+
+	}
+
+	function isValid(stake) {
+		// check that stake is a positive integer
+		return /^([1-9]\d*)$/.test(stake);
 	}
 
 	betslip.createSelection = function(id, name, price) {
@@ -331,6 +455,8 @@ var betslip = (function() {
 		// on adding the first selection make sure Cancel and Place Bets buttons are displayed
 		if (selections.length === 1) {
 			displayButtons();
+			enableMessageDisplay();
+			showMessage(stakeMessage);
 		}
 	};
 
