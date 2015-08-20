@@ -306,6 +306,7 @@ var betslip = (function() {
 		cancelButton = document.querySelector('.buttons-cancel');
 		placeBetsButton = document.querySelector('.buttons-place-bets');
 		messageContainer = document.querySelector('.betslip-message');
+		disableEnterKey();
 	}
 
 	function removeSelection(selection) {
@@ -469,11 +470,22 @@ var betslip = (function() {
 		return /^([1-9]\d*)$/.test(stake);
 	}
 
+	function disableEnterKey() {
+		betslipContainer.onkeypress = function(e) {
+			var key = (typeof e.which == "number") ? e.which : e.keyCode; 
+		  if (key == 13) {
+		    e.preventDefault();
+		  }
+		}
+	}
+
 	betslip.createSelection = function(id, name, price) {
 		var selection = new Selection(id, name, price);
 		selections.push(selection);
 		selectionsContainer.appendChild(selection.display());
-		// on adding the first selection make sure Cancel and Place Bets buttons are displayed
+		// on adding the first selection 
+		// - make sure Cancel and Place Bets buttons are displayed
+		// - message regarding valid stake is displayed
 		if (selections.length === 1) {
 			displayButtons();
 			enableMessageDisplay();
