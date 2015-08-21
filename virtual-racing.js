@@ -676,13 +676,13 @@ var raceEvent = (function() {
 
 	function handleRaceEnd(winner) {
 		displayWinner(winner);
-		raceEvent.hideStartButton();
 		betslip.processOutcome(winner);
 	}
 
 	function start() {
 		startSignal.play();
 		window.setTimeout(startRace, 8500);
+		raceEvent.hideStartButton();
 	}
 
   function initialiseRaceEvent() {
