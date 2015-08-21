@@ -80,6 +80,8 @@ var wallet = (function() {
 		initialiseWallet();
 	};
 
+	Object.freeze(wallet);
+
 	return wallet;
 
 })();
@@ -246,6 +248,8 @@ var raceData = (function() {
 		getRacesContainer();
 	};
 
+	Object.freeze(raceData);
+
 	return raceData;
 
 })();
@@ -360,7 +364,6 @@ var betslip = (function() {
 		// remove from selections array
 		var index = selections.indexOf(selection);
 		if (index > -1) {
-			console.log('removing selection from array');
 			selections.splice(index, 1);
 		}
 
@@ -547,6 +550,8 @@ var betslip = (function() {
 		getBetslipElements();
 	}
 
+	Object.freeze(betslip);
+
 	return betslip;
 
 })();
@@ -709,6 +714,8 @@ var raceEvent = (function() {
 		initialiseRaceEvent();
 	};
 
+	Object.freeze(raceEvent);
+
 	return raceEvent;
 
 })();
@@ -726,6 +733,8 @@ var utils = (function() {
 		element.setAttribute('class', cssClass);
 		return element;
 	};
+
+	Object.freeze(utils);
 
 	return utils;
 
