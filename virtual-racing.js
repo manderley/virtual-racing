@@ -570,7 +570,7 @@ var raceEvent = (function() {
 	}
 
 	function displayWinner(winner) {
-		winnerMessageContainer.innerHTML = 'The winner is ' + winner;
+		winnerMessageContainer.innerHTML = 'The winner is horse number ' + winner;
 	}
 
 	function run() {
