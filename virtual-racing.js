@@ -534,6 +534,8 @@ var betslip = (function() {
 			enableMessageDisplay();
 			showMessage(stakeMessage);
 		}
+
+		return selection;
 	};
 
 	betslip.processOutcome = function(winner) {
@@ -552,6 +554,11 @@ var betslip = (function() {
 
 		showMessage(outcomeMessage);
 	};
+
+	// used by test
+	betslip.clear = function() {
+		removeAllSelections();
+	}
 
 	betslip.init = function() {
 		getBetslipElements();
