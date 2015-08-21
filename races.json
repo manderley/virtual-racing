@@ -9,7 +9,7 @@
 					"name": "Sleeping Beauty",
 					"jockey": "Rhiain Ingram",
 					"colours": "horse1.png",
-					"price": 24
+					"price": 3.5
 				},
 				{
 					"id": "r1h2",
@@ -17,7 +17,7 @@
 					"name": "Sweetneida",
 					"jockey": "Charlotte Jenner",
 					"colours": "horse2.png",
-					"price": 5.5
+					"price": 4
 				},
 				{
 					"id": "r1h3",
@@ -25,7 +25,7 @@
 					"name": "Hillbilly Hula Gal",
 					"jockey": "George Blackwell",
 					"colours": "horse3.png",
-					"price": 8
+					"price": 4.5
 				},
 				{
 					"id": "r1h4",
@@ -41,7 +41,7 @@
 					"name": "Underthemoonlight",
 					"jockey": "Aaron Jones",
 					"colours": "horse5.png",
-					"price": 26
+					"price": 13
 				}
 			]
 		}
