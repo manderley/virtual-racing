@@ -442,6 +442,9 @@ var betslip = (function() {
 		// remove buttons
 		removeButtons();
 
+		// show button for starting race
+		raceEvent.showStartButton();
+
 	}
 
 	function calculatePotentialWin(price, stake) {
@@ -569,7 +572,6 @@ var raceEvent = (function() {
 			
 			// we have a winner
 			winner = horsesPositions.indexOf(fastestHorsePosition) + 1;
-			displayWinner(winner);
 			
 			changeHorseImages(stationaryHorse);
 			
@@ -627,14 +629,17 @@ var raceEvent = (function() {
 			horseImages[i].src = image;
 		}
 	}
-    	
-  var startRace = function() {
-  	changeHorseImages(movingHorse);
+
+	function startRace() {
+		changeHorseImages(movingHorse);
   	intervalId = window.setInterval(run, 30);
-  };
+	}
 
   var raceFinishCallBack = function(winner) {
-		alert(":::" + winner);
+		// display winner
+		displayWinner(winner);
+		// hide button for starting race
+		raceEvent.hideStartButton();
 	};
 
 	function start() {
@@ -661,6 +666,14 @@ var raceEvent = (function() {
 		startRaceButton.onclick = start;
 
   }
+
+  raceEvent.showStartButton = function() {
+  	startRaceButton.classList.add('show');
+  };
+
+  raceEvent.hideStartButton = function() {
+  	startRaceButton.classList.remove('show');
+  };
 
 	raceEvent.init = function() {
 		getElements();

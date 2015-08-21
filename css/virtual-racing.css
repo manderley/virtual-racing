@@ -28,6 +28,10 @@ html {
   height: auto;
 }
 
+.start-race {
+	display: none;
+}
+
 .betslip-buttons,
 .betslip-message {
 	display: none;
