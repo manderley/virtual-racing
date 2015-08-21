@@ -311,6 +311,10 @@ var betslip = (function() {
 			return this.selectionContainer;
 		};
 
+		this.setPotentialWinAmount = function() {
+			this.potentialWin = calculatePotentialWin(this.price, this.value);
+		}
+
 		// update display after bet has been placed
 		this.updateDisplay = function() {
 			// - remove delete button
@@ -431,29 +435,18 @@ var betslip = (function() {
 	}
 
 	function placeBets() {
-		console.log('placing bets');
-		// save selections in local storage?
 
-		// display placed bets
+		// display placed bets message
 		showMessage(betsPlacedMessage);
 
-		// remove buttons
-		removeButtons();
-
-		// update selections array with potential win value
+		// update selections with potential win value and update display of selections in betslip
 		for (var i = 0; i < selections.length; i++) {
-			// create method in Selection
-			var potentialWin = calculatePotentialWin(selections[i].price, selections[i].value);
-			selections[i].potentialWin = potentialWin;
-
+			selections[i].setPotentialWinAmount();
 			selections[i].updateDisplay();
 		}
 
-		// change display of selections in betslip:
-		// - remove delete button
-		// - disable input field
-		// - display potential win amount
-
+		// remove buttons
+		removeButtons();
 
 	}
 
