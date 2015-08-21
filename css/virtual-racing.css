@@ -44,12 +44,16 @@ header h1 {
 }
 
 .betslip-heading {
-	margin: 0 0 20px 0;
+	margin: 0 0 10px 0;
 	font-size: 1.5em;
 }
 
+.betslip-message {
+	margin-top: 0;
+}
+
 .betslip-selections {
-	
+	margin-bottom: 10px;
 }
 
 .betslip-selection {
@@ -61,17 +65,35 @@ header h1 {
 }
 
 .selection-price {
-	
+	color: #298e02;
 }
 
 .selection-stake {
 	width: 50px;
 }
 
+.selection-delete {
+	padding-left: 5px;
+	color: red;
+	cursor: pointer;
+}
+
 fieldset { 
 	border: 0;
 	padding: 0;
 	margin: 0;
+}
+
+.buttons-cancel {
+	background: #858d93;
+	border-color: #858d93;
+	color: #fff;
+}
+
+.buttons-place-bets {
+	background: #298e02;
+	border-color: #298e02;
+	color: #fff;
 }
 
 .wallet {
@@ -91,6 +113,7 @@ ul, ol {
 	width: 600px;
 	height: 228px;
 	background-image: url("../images/race-background.png");
+	margin-bottom: 10px;
 }
 
 .race-course ul {
@@ -109,11 +132,20 @@ ul, ol {
 
 .start-race {
 	display: none;
+	background: #298e02;
+	border-color: #298e02;
+	color: #fff;
 }
 
 .betslip-buttons,
 .betslip-message {
 	display: none;
+}
+
+.race {
+	border-top: 1px solid #e6711b;
+	border-bottom: 1px solid #e6711b;
+	padding-bottom: 10px;
 }
 
 .race-heading {
@@ -122,19 +154,49 @@ ul, ol {
 
 .race-runners {
 	display: table;
+	width: 100%;
 }
 
 .race-runners li {
 	display: table-row;
+	padding: 10px;
+}
+
+.race-runners li:nth-child(odd) {
+	background: #efefec;
 }
 
 .race-runners li * {
 	display: table-cell;
+	vertical-align: middle;
+}
+
+.runner-number {
+	padding-left: 10px;
+}
+
+.runner-name {
+	font-weight: bold;
+}
+
+.runner-bet-button {
+	width: 60px;
+	margin-bottom: 12px;
+	background: #e6711b;
+	border-color: #e6711b;
+	color: #fff;
+}
+
+.runner-bet-button.disabled {
+	background: #858d93;
+	border-color: #858d93;
+	cursor: default;
 }
 
 .race-runners img {
 	width: 32px;
 	height: auto;
+	margin-top: 8px;
 }
 .show {
 	display: block;

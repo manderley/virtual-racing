@@ -207,21 +207,21 @@ var raceData = (function() {
 			runnerContainer.appendChild(jockeyElement);
 			runnerContainer.appendChild(priceElement);
 
-			// use closure to capture values of this runner's id, name and price
-			priceElement.onclick = (function(id, name, price, button) {
+			// use closure to capture values of this runner's id, number, name and price
+			priceElement.onclick = (function(id, number, name, price, button) {
 				return function() {
-					raceData.addToBetslip(id, name, price, button);
+					raceData.addToBetslip(id, number, name, price, button);
 				}
-			})(this.id, this.name, this.price, priceElement);
+			})(this.id, this.number, this.name, this.price, priceElement);
 			
 			return runnerContainer;
 		}
 
 	}
 
-	raceData.addToBetslip = function(id, name, price, button) {
+	raceData.addToBetslip = function(id, number, name, price, button) {
 		// create selection
-		betslip.createSelection(id, name, price);
+		betslip.createSelection(id, number, name, price);
 
 		// add selected class to runner
 		var selectedRunner = document.getElementById('runner-' + id);
@@ -264,7 +264,7 @@ var betslip = (function() {
 	var stakeMessage = 'Enter a stake and then place your bets. The stake must be a whole number. If it includes decimal places it will be rounded down to the nearest whole number.';
 	var stakeErrorMessage = 'Please enter a valid stake amount for each selection.';
 	var fundsErrorMessage = 'You do not have sufficient funds. Please make sure your total bet amount does not exceed your wallet balance.';
-	var betsPlacedMessage = 'Your bets have been placed. Your selections are listed below. Please click on the "Start Race" button to start the race. Good luck!';
+	var betsPlacedMessage = 'Your bets have been placed. Your selections are listed below.<br/><br/>Please click on the <strong>"Start Race"</strong> button to start the race. Good luck!';
 	
 	var selectionsPlaced = [];
 	var selections = [];
@@ -277,15 +277,17 @@ var betslip = (function() {
 		console.log(selections);
 	}
 
-	function Selection(id, name, price) {
+	function Selection(id, number, name, price) {
 		this.id = id;
 		this.elementId = 'selection-' + this.id;
+		this.number = number;
 		this.name = name;
 		this.price = price;
 		this.value = 0;
 		this.potentialWin = 0;
 		this.selectionContainer;
 		this.nameElement;
+		this.numberElement;
 		this.priceElement;
 		this.inputElement;
 		this.removeElement;
@@ -298,6 +300,7 @@ var betslip = (function() {
 
 			this.nameElement = utils.createTextElement('label', 'selection-name', this.name);
 			this.nameElement.setAttribute('for', this.id);
+			this.numberElement = utils.createTextElement('span', 'selection-number', this.number);
 			this.priceElement = utils.createTextElement('span', 'selection-price', this.price);
 			this.inputElement = utils.createTextElement('input', 'selection-stake');
 			this.inputElement.setAttribute('type', 'number');
@@ -306,6 +309,7 @@ var betslip = (function() {
 			this.inputElement.setAttribute('id', this.id);
 			this.removeElement = utils.createTextElement('span', 'selection-delete', 'x');
 
+			this.selectionContainer.appendChild(this.numberElement);
 			this.selectionContainer.appendChild(this.nameElement);
 			this.selectionContainer.appendChild(this.priceElement);
 			this.selectionContainer.appendChild(this.inputElement);
@@ -331,10 +335,12 @@ var betslip = (function() {
 			// - display potential win amount
 			this.selectionContainer.removeChild(this.removeElement);
 			this.inputElement.setAttribute('disabled', 'disabled');
+			var potentialWinContainer = utils.createTextElement('div', 'selection-potential-win');
 			var potentialWinLabel = utils.createTextElement('span', 'selection-potential-win-label', 'Potential win amount:');
 			var potentialWinAmount = utils.createTextElement('span', 'selection-potential-win-amount', this.potentialWin);
-			this.selectionContainer.appendChild(potentialWinLabel);
-			this.selectionContainer.appendChild(potentialWinAmount);
+			potentialWinContainer.appendChild(potentialWinLabel);
+			potentialWinContainer.appendChild(potentialWinAmount);
+			this.selectionContainer.appendChild(potentialWinContainer);
 		};
 
 	}
@@ -364,11 +370,11 @@ var betslip = (function() {
 		// re-enable button on racecard
 		var buttonId = document.getElementById('button-' + selection.id);
 		buttonId.classList.remove('disabled');
-		buttonId.onclick = (function(id, name, price, button) {
+		buttonId.onclick = (function(id, number, name, price, button) {
 			return function() {
-				raceData.addToBetslip(id, name, price, button);
+				raceData.addToBetslip(id, number, name, price, button);
 			}
-		})(selection.id, selection.name, selection.price, buttonId);
+		})(selection.id, selection.number, selection.name, selection.price, buttonId);
 
 		// remove selected class from runner
 		var runnerId = document.getElementById('runner-' + selection.id);
@@ -508,8 +514,8 @@ var betslip = (function() {
 		}
 	}
 
-	betslip.createSelection = function(id, name, price) {
-		var selection = new Selection(id, name, price);
+	betslip.createSelection = function(id, number, name, price) {
+		var selection = new Selection(id, number, name, price);
 		selections.push(selection);
 		selectionsContainer.appendChild(selection.display());
 		// on adding the first selection 
