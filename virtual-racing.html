@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-  <title>Virtual racing</title>
+  <title>Virtual horse racing betting game</title>
   <meta charset="utf-8">
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/virtual-racing.css">
@@ -10,40 +10,46 @@
 <body>
   
   <header>
-    <h1>Virtual Racing</h1>
+    <h1>Virtual Horse Racing</h1>
     <div class="wallet">
-      Balance: <span class="wallet-balance"></span>
+      Available funds: <span class="wallet-balance"></span>
     </div>
   </header>
 
-  <section class="race-viewer">
-    <div class="race-course">
-      <ul>
-        <li class="horse" id="horse_0"><img class="horse-image" src="images/stationary-horse.png" alt="horse 1"></li>
-        <li class="horse" id="horse_1"><img class="horse-image" src="images/stationary-horse.png" alt="horse 2"></li>
-        <li class="horse" id="horse_2"><img class="horse-image" src="images/stationary-horse.png" alt="horse 3"></li>
-        <li class="horse" id="horse_3"><img class="horse-image" src="images/stationary-horse.png" alt="horse 4"></li>
-        <li class="horse" id="horse_4"><img class="horse-image" src="images/stationary-horse.png" alt="horse 5"></li>
-      </ul>  
-    </div>
-    <button class="start-race">Start Race</button>
-    <p class="display-winner"></p>
-    <audio src="start-signal.wav" class="race-start-signal" autostart="false"></audio>
-  </section>
-  
-  <section class="races">
-    
-  </section>
+  <div class="main-content">
+    <section>
 
-  <form class="betslip">
-    <h1 class="betslip-heading">Betslip</h1>
-    <p class="betslip-message"></p>
-    <ol class="betslip-selections"></ol>
-    <fieldset class="betslip-buttons">
-      <button class="buttons-cancel">Cancel</button>
-      <button class="buttons-place-bets">Place Bets</button>
-    </fieldset>
-  </form>
+      <section class="race-viewer">
+        <div class="race-course">
+          <ul>
+            <li class="horse" id="horse_0"><img class="horse-image" src="images/stationary-horse.png" alt="horse 1"></li>
+            <li class="horse" id="horse_1"><img class="horse-image" src="images/stationary-horse.png" alt="horse 2"></li>
+            <li class="horse" id="horse_2"><img class="horse-image" src="images/stationary-horse.png" alt="horse 3"></li>
+            <li class="horse" id="horse_3"><img class="horse-image" src="images/stationary-horse.png" alt="horse 4"></li>
+            <li class="horse" id="horse_4"><img class="horse-image" src="images/stationary-horse.png" alt="horse 5"></li>
+          </ul>  
+        </div>
+        <button class="start-race">Start Race</button>
+        <p class="display-winner"></p>
+        <audio src="start-signal.wav" class="race-start-signal" autostart="false"></audio>
+      </section>
+      
+      <section class="races">
+        
+      </section>
+
+    </section>
+
+    <form class="betslip">
+      <h1 class="betslip-heading">Betslip</h1>
+      <p class="betslip-message"></p>
+      <ol class="betslip-selections"></ol>
+      <fieldset class="betslip-buttons">
+        <button class="buttons-cancel">Cancel</button>
+        <button class="buttons-place-bets">Place Bets</button>
+      </fieldset>
+    </form>
+  </div>
 
 </body>
 </html>

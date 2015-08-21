@@ -1,20 +1,99 @@
 html {
 	font-family: 'Helvetica Neue', Arial, sans-serif;
 	color: rgb(77, 77, 77);
-	font-size: 16px;
+	font-size: 14px;
+	text-align: center;
+	box-sizing: border-box;
+}
+
+body {
+	text-align: left;
+	padding: 0;
+}
+
+header {
+	position: relative;
+	background: #005689;
+	padding: 10px 20px;
+	margin-bottom: 20px;
+}
+
+header h1 {
+	color: rgb(170, 216, 241);
+}
+
+.main-content {
+	width: 860px;
+	padding: 0 20px;
+	margin: 0 auto;
+}
+
+.main-content > section {
+	width: 600px;
+	float: left;
+}
+
+.betslip {
+	width: 200px;
+	min-height: 206px;
+	margin-left: 20px;
+	float: left;
+	background: #efefec;
+	border: 1px solid #e6711b;
+	padding: 10px;
+}
+
+.betslip-heading {
+	margin: 0 0 20px 0;
+	font-size: 1.5em;
+}
+
+.betslip-selections {
+	
+}
+
+.betslip-selection {
+	
+}
+
+.selection-name {
+	
+}
+
+.selection-price {
+	
+}
+
+.selection-stake {
+	width: 50px;
+}
+
+fieldset { 
+	border: 0;
+	padding: 0;
+	margin: 0;
+}
+
+.wallet {
+	position: absolute;
+	right: 20px;
+	top: 20px;
+	color: #fff;
+}
+
+ul, ol {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
 }
 
 .race-course {
-	width: 800px;
+	width: 600px;
+	height: 228px;
 	background-image: url("../images/race-background.png");
-  background-color: #ccc;
-  height: 228px;
-  margin-top: 2px;
 }
 
 .race-course ul {
-  list-style-type: none;
-  margin: 0;
   padding: 52px 0 0 5px; 
 }
 
@@ -37,6 +116,26 @@ html {
 	display: none;
 }
 
+.race-heading {
+	font-size: 1.5em;
+}
+
+.race-runners {
+	display: table;
+}
+
+.race-runners li {
+	display: table-row;
+}
+
+.race-runners li * {
+	display: table-cell;
+}
+
+.race-runners img {
+	width: 32px;
+	height: auto;
+}
 .show {
 	display: block;
 }
