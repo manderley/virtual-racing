@@ -5,7 +5,7 @@ var wallet = (function() {
 	var wallet = {};
 
 	var initialBalance = 390;
-	var currency = "GC"; // Gold Coins
+	var currency = 'GC'; // Gold Coins
 	var balanceContainer;
 
 	// on loading page, check if wallet is already in storage
@@ -88,10 +88,10 @@ var raceData = (function() {
 
 	var raceData = {};
 
-	var dataSource = "races.json";
+	var dataSource = 'races.json';
 	var races = [];
 	var container;
-	var imagesPath = "images/"
+	var imagesPath = 'images/';
 
 	function getRaceData() {
 		makeRequest(dataSource, populateRaces, handleError);
@@ -123,17 +123,16 @@ var raceData = (function() {
 			return new XMLHttpRequest;
 		} else if (window.ActiveXObject) {
 			try {
-				return new ActiveXObject("Msxml2.XMLHTTP");
+				return new ActiveXObject('Msxml2.XMLHTTP');
 			}
 			catch(e) {
 				try {
-					return new ActiveXObject("Microsoft.XMLHTTP");
+					return new ActiveXObject('Microsoft.XMLHTTP');
 				}
 				catch(e) {
 					console.log(e.message);
 				}
 			}
-			
 		} 
 	}
 
@@ -148,7 +147,7 @@ var raceData = (function() {
 				}
 			}
 		};
-		httpRequest.open("GET", url, true);
+		httpRequest.open('GET', url, true);
 	  httpRequest.send(null);
 	}
 
@@ -242,11 +241,6 @@ var raceData = (function() {
 
 	};
 
-	raceData.getFirstRacePrices = function() {
-		var priceList = races[0].priceList;
-		return priceList;
-	};
-
 	raceData.init = function() {
 		getRaceData();
 		getRacesContainer();
@@ -279,11 +273,6 @@ var betslip = (function() {
 
 	var totalBetAmount = 0;
 	var validInput = true;
-
-	// temporary method, delete when finished
-	betslip.getSelections = function() {
-		console.log(selections);
-	}
 
 	function Selection(id, number, name, price) {
 		this.id = id;
@@ -400,7 +389,6 @@ var betslip = (function() {
 		// don't need to increment the value of i as each call to removeSelection()
 		// removes an item from the selections array; so on each iteration we want 
 		// to operate on the first item in the selections array
-		console.log('removing all selections');
 		for (var i = 0; i < selections.length;) {
 			removeSelection(selections[i]);
 		}
@@ -429,15 +417,15 @@ var betslip = (function() {
 
 	function validateBets() {
 
-		// if all inputs are valid, check total amount against wallet balance
-		// if balance is sufficient, place bets and update wallet balance
-		// otherwise show error message
-
 		// reset global variables before getting input values
 		validInput = true;
 		totalBetAmount = 0;
 
-		getInputValues();
+		getInputValues(); // updates validInput and totalBetAmount
+
+		// if all inputs are valid, check total amount against wallet balance
+		// if balance is sufficient, place bets and update wallet balance
+		// otherwise show error message
 
 		if (validInput) {
 			if (totalBetAmount <= wallet.returnBalance()) {
@@ -453,7 +441,6 @@ var betslip = (function() {
 
 	function placeBets() {
 
-		// display placed bets message
 		showMessage(betsPlacedMessage);
 
 		// update selections with potential win value and update display of selections in betslip
@@ -462,10 +449,7 @@ var betslip = (function() {
 			selections[i].updateDisplay();
 		}
 
-		// remove buttons
 		removeButtons();
-
-		// show button for starting race
 		raceEvent.showStartButton();
 
 	}
@@ -505,7 +489,6 @@ var betslip = (function() {
 			}
 
 		}
-
 	}
 
 	function isValid(stake) {
@@ -571,9 +554,11 @@ var betslip = (function() {
 var raceEvent = (function() {
 
 	var raceEvent = {};
+
+	var imagesPath = 'images/'
 	
-	var movingHorse = 'images/moving-horse.gif';
-	var stationaryHorse = 'images/stationary-horse.png';
+	var movingHorse = imagesPath + 'moving-horse.gif';
+	var stationaryHorse = imagesPath + 'stationary-horse.png';
 	var raceLength = 231000;
 	var maxMarginBg = 200;
 

@@ -1,11 +1,12 @@
 "use strict";
 
 var testSuite = (function() {
+
   var testSuite = {};
+
   // wallet
   testSuite.wallet = function(testWallet) {
     var balanceContainerElement = document.querySelector('.wallet-balance');
-
 
     var initialTestBalance = null;
 
@@ -43,7 +44,7 @@ var testSuite = (function() {
     console.log("Testing the betslip. First clearing it.");
     testBetslip.clear();
 
-    var testSelection = betslip.createSelection("r1h2", "Test Horse", 3.5);
+    var testSelection = betslip.createSelection("r1h2", 2, "Test Horse", 3.5);
     testSelection.value = 11;
     testSelection.setPotentialWinAmount();
 
@@ -52,9 +53,9 @@ var testSuite = (function() {
     // to avoid null when trying to remove class from button
     document.getElementById('button-r1h2').classList.add('disabled');
 
-    assertTrue( document.getElementById('button-r1h2').className.indexOf('disabled') !== -1,'Button is disabled before calling clear bets');
+    assertTrue(document.getElementById('button-r1h2').className.indexOf('disabled') !== -1,'Button is disabled before calling clear bets');
     testBetslip.clear();
-    assertTrue( document.getElementById('button-r1h2').className.indexOf('disabled') === -1,'Button has been enabled after removing bet from betslip');
+    assertTrue(document.getElementById('button-r1h2').className.indexOf('disabled') === -1,'Button has been enabled after removing bet from betslip');
   }
 
   testSuite.run = function() {
