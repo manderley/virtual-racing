@@ -415,18 +415,12 @@ var betslip = (function() {
 		totalBetAmount = 0;
 
 		getInputValues();
-		console.log('validInput: ', validInput);
-		console.log('totalBetAmount: ', totalBetAmount);
 
 		if (validInput) {
-			console.log('input is valid');
-			console.log('wallet balance: ', wallet.returnBalance());
 			if (totalBetAmount <= wallet.returnBalance()) {
-				console.log('and we have sufficient funds');
 				placeBets();
 				wallet.updateBalance(totalBetAmount);
 			} else {
-				console.log('but we do not have sufficient funds');
 				showMessage(fundsErrorMessage);
 			}
 		} else {
