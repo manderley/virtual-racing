@@ -568,12 +568,11 @@ var raceEvent = (function() {
 	}
 
 	function run() {
-		move();
+		setRaceInMotion();
 		displayRaceAction();
 	}
 
-	function move() {
-		console.log('move');
+	function setRaceInMotion() {
 		var fastestHorsePosition = Math.max.apply(Math, horsesPositions);
 
 		// check for winner
@@ -588,6 +587,7 @@ var raceEvent = (function() {
 			clearInterval(intervalId);
 		}
 
+		// set pace
 		if (fastestHorsePosition > ((raceLength * 7) / 8)) {
 			movePonderatedPace();
 		} else {
