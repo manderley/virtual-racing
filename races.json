@@ -1,36 +1,36 @@
 {
 	"races": [
 		{
-			"name": "Lingfield - 1207m Flat",
+			"name": "Finger Lakes",
 			"runners": [
 				{
 					"id": "r1h1",
 					"number": 1,
-					"name": "Angel Flores",
+					"name": "Sleeping Beauty",
 					"jockey": "Rhiain Ingram",
 					"colours": "horse1.png",
-					"price": 3.5
+					"price": 24
 				},
 				{
 					"id": "r1h2",
 					"number": 2,
-					"name": "Putin",
+					"name": "Sweetneida",
 					"jockey": "Charlotte Jenner",
 					"colours": "horse2.png",
-					"price": 4
+					"price": 5.5
 				},
 				{
 					"id": "r1h3",
 					"number": 3,
-					"name": "Monsieur Jamie",
+					"name": "Hillbilly Hula Gal",
 					"jockey": "George Blackwell",
 					"colours": "horse3.png",
-					"price": 4.5
+					"price": 8
 				},
 				{
 					"id": "r1h4",
 					"number": 4,
-					"name": "Mrs Warren",
+					"name": "Valkimqua",
 					"jockey": "Chris Meehan",
 					"colours": "horse4.png",
 					"price": 7
@@ -38,10 +38,10 @@
 				{
 					"id": "r1h5",
 					"number": 5,
-					"name": "Harwoods Star",
+					"name": "Underthemoonlight",
 					"jockey": "Aaron Jones",
 					"colours": "horse5.png",
-					"price": 13
+					"price": 26
 				}
 			]
 		}
