@@ -149,10 +149,12 @@ var raceData = (function() {
 	function Race(race) {
 		this.name = race.name;
 		this.runners = [];
+		this.priceList = [];
 
 		if (race.runners) {
 			for (var i = 0; i < race.runners.length; i++) {
 				this.runners.push(new Runner(race.runners[i]));
+				this.priceList.push(race.runners[i].price);
 			}
 		}
 		
@@ -185,6 +187,7 @@ var raceData = (function() {
 		this.jockey = runner.jockey;
 		this.colours = runner.colours;
 		this.price = runner.price;
+		
 		this.display = function() {
 			var runnerContainer = document.createElement('li');
 			runnerContainer.setAttribute('id', 'runner-' + this.id);
@@ -213,6 +216,7 @@ var raceData = (function() {
 			
 			return runnerContainer;
 		}
+
 	}
 
 	raceData.addToBetslip = function(id, name, price, button) {
@@ -230,6 +234,11 @@ var raceData = (function() {
 		button.classList.add('disabled');
 		button.onclick = null;
 
+	};
+
+	raceData.getFirstRacePrices = function() {
+		var priceList = races[0].priceList;
+		return priceList;
 	};
 
 	raceData.init = function() {
@@ -536,8 +545,6 @@ var raceEvent = (function() {
 	var intervalId = -1;
 	var winner = -1;
 
-	var raceFinishCallBack = null;
-
 	var currentMarginBg = 0;
 
 	var startRaceButton;
@@ -545,6 +552,8 @@ var raceEvent = (function() {
 	var raceCourse;
 	var horseImages;
 	var startSignal;
+
+	var priceList = [3.5, 4, 4.5, 7, 13];
 
 	function getElements() {
 		startRaceButton = document.querySelector('.start-race');
@@ -564,18 +573,17 @@ var raceEvent = (function() {
 	}
 
 	function move() {
-
+		console.log('move');
 		var fastestHorsePosition = Math.max.apply(Math, horsesPositions);
 
-		// check if winner
+		// check for winner
 		if (winner < 0 && fastestHorsePosition > raceLength) {
-			
-			// we have a winner
+
 			winner = horsesPositions.indexOf(fastestHorsePosition) + 1;
 			
 			changeHorseImages(stationaryHorse);
 			
-			raceFinishCallBack(winner);
+			handleRaceEnd(winner);
 			
 			clearInterval(intervalId);
 		}
@@ -635,27 +643,24 @@ var raceEvent = (function() {
   	intervalId = window.setInterval(run, 30);
 	}
 
-  var raceFinishCallBack = function(winner) {
-		// display winner
+	function handleRaceEnd(winner) {
 		displayWinner(winner);
-		// hide button for starting race
 		raceEvent.hideStartButton();
-	};
+	}
 
 	function start() {
 		startSignal.play();
 		window.setTimeout(startRace, 8500);
 	}
 
-  function initialiseRaceEvent(betodds, callBack) {
-  	
-  	raceFinishCallBack = callBack;
+  function initialiseRaceEvent() {
 		
-		if (betodds.length != 5) {
+		if (priceList.length != 5) {
 			console.log('Program only handles 5 horses per race');
+			return;
 		}
 		
-		chances = betodds.map(function(num) {
+		chances = priceList.map(function(num) {
 		  return 1/num;
 		});
 		
@@ -677,7 +682,7 @@ var raceEvent = (function() {
 
 	raceEvent.init = function() {
 		getElements();
-		initialiseRaceEvent([3.5, 4, 4.5, 7, 13], raceFinishCallBack);
+		initialiseRaceEvent();
 	};
 
 	return raceEvent;
