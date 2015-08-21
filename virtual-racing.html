@@ -8,15 +8,33 @@
   <script src="virtual-racing.js"></script>
 </head>
 <body>
+  
   <header>
     <h1>Virtual Racing</h1>
     <div class="wallet">
       Balance: <span class="wallet-balance"></span>
     </div>
   </header>
+
+  <section class="race-viewer">
+    <div class="race-course">
+      <ul>
+        <li class="horse" id="horse_0"><img class="horse-image" src="images/stationary-horse.png" alt="horse 1"></li>
+        <li class="horse" id="horse_1"><img class="horse-image" src="images/stationary-horse.png" alt="horse 2"></li>
+        <li class="horse" id="horse_2"><img class="horse-image" src="images/stationary-horse.png" alt="horse 3"></li>
+        <li class="horse" id="horse_3"><img class="horse-image" src="images/stationary-horse.png" alt="horse 4"></li>
+        <li class="horse" id="horse_4"><img class="horse-image" src="images/stationary-horse.png" alt="horse 5"></li>
+      </ul>  
+    </div>
+    <button class="start-race">Start Race</button>
+    <p class="display-winner"></p>
+    <audio src="start-signal.wav" class="race-start-signal" autostart="false"></audio>
+  </section>
+  
   <section class="races">
     
   </section>
+
   <form class="betslip">
     <h1 class="betslip-heading">Betslip</h1>
     <p class="betslip-message"></p>
@@ -26,5 +44,6 @@
       <button class="buttons-place-bets">Place Bets</button>
     </fieldset>
   </form>
+
 </body>
 </html>

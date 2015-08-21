@@ -518,6 +518,159 @@ var betslip = (function() {
 
 })();
 
+var raceEvent = (function() {
+
+	var raceEvent = {};
+	
+	var movingHorse = 'images/moving-horse.gif';
+	var stationaryHorse = 'images/stationary-horse.png';
+	var raceLength = 231000;
+	var maxMarginBg = 200;
+
+	var chances = [];
+	var horsesPositions = [];
+
+	var intervalId = -1;
+	var winner = -1;
+
+	var raceFinishCallBack = null;
+
+	var currentMarginBg = 0;
+
+	var startRaceButton;
+	var winnerMessageContainer;
+	var raceCourse;
+	var horseImages;
+	var startSignal;
+
+	function getElements() {
+		startRaceButton = document.querySelector('.start-race');
+		winnerMessageContainer = document.querySelector('.display-winner');
+		raceCourse = document.querySelector('.race-course');
+		horseImages = document.getElementsByClassName('horse-image');
+		startSignal = document.querySelector('.race-start-signal');
+	}
+
+	function displayWinner(winner) {
+		winnerMessageContainer.innerHTML = 'The winner is ' + winner;
+	}
+
+	function run() {
+		move();
+		displayRaceAction();
+	}
+
+	function move() {
+
+		var fastestHorsePosition = Math.max.apply(Math, horsesPositions);
+
+		// check if winner
+		if (winner < 0 && fastestHorsePosition > raceLength) {
+			
+			// we have a winner
+			winner = horsesPositions.indexOf(fastestHorsePosition) + 1;
+			displayWinner(winner);
+			
+			changeHorseImages(stationaryHorse);
+			
+			raceFinishCallBack(winner);
+			
+			clearInterval(intervalId);
+		}
+
+		if (fastestHorsePosition > ((raceLength * 7) / 8)) {
+			movePonderatedPace();
+		} else {
+			moveEqualPace();
+		}
+
+		// check to stop display
+		var slowestHorsePosition = Math.min.apply(Math, horsesPositions);
+		if (slowestHorsePosition > raceLength) {
+			clearInterval(intervalId);
+		}
+	}
+
+	// at the begining the race is equal, favourites show up at the end
+	function moveEqualPace() {
+		for (var i = 0; i < horsesPositions.length; i++) {
+			horsesPositions[i] += Math.floor((Math.random() * 150) + 1) + 500;
+		}
+	}
+
+	// better horse will go faster
+	function movePonderatedPace() {
+		for (var i = 0; i < horsesPositions.length; i++) {
+			var baseRandom = (240 * (chances[i])) + 51;
+			horsesPositions[i]+= Math.floor((Math.random() * baseRandom) + 1) + 800;
+		}
+	}
+
+	function displayRaceAction() {
+		currentMarginBg++;
+
+		// move horses
+		var slowestHorsePosition = Math.min.apply(Math, horsesPositions);
+		for (var i = 0; i < horsesPositions.length; i++) {
+			var currentHorse = ((horsesPositions[i] - slowestHorsePosition) / 20) + currentMarginBg;
+			document.getElementById('horse_' + i).style.paddingLeft = currentHorse + 'px';
+		}
+
+		// move background
+		var marginBg = (slowestHorsePosition / 100) - currentMarginBg;
+		var newBgPosition = -marginBg + 'px 0';
+		raceCourse.style.backgroundPosition = newBgPosition;
+  }
+
+	function changeHorseImages(image) {
+		for (var i = 0; i < horseImages.length;i++) {
+			horseImages[i].src = image;
+		}
+	}
+    	
+  var startRace = function() {
+  	changeHorseImages(movingHorse);
+  	intervalId = window.setInterval(run, 30);
+  };
+
+  var raceFinishCallBack = function(winner) {
+		alert(":::" + winner);
+	};
+
+	function start() {
+		startSignal.play();
+		window.setTimeout(startRace, 8500);
+	}
+
+  function initialiseRaceEvent(betodds, callBack) {
+  	
+  	raceFinishCallBack = callBack;
+		
+		if (betodds.length != 5) {
+			console.log('Program only handles 5 horses per race');
+		}
+		
+		chances = betodds.map(function(num) {
+		  return 1/num;
+		});
+		
+		for (var i = 0; i < chances.length; i++) {
+			horsesPositions[i] = 0;
+		}
+
+		startRaceButton.onclick = start;
+
+  }
+
+	raceEvent.init = function() {
+		getElements();
+		initialiseRaceEvent([3.5, 4, 4.5, 7, 13], raceFinishCallBack);
+	};
+
+	return raceEvent;
+
+})();
+
 var utils = (function() {
 
 	var utils = {};
@@ -540,4 +693,5 @@ window.onload = function() {
 	wallet.init();
 	raceData.init();
 	betslip.init();
+	raceEvent.init();
 };

@@ -4,6 +4,30 @@ html {
 	font-size: 16px;
 }
 
+.race-course {
+	width: 800px;
+	background-image: url("../images/race-background.png");
+  background-color: #ccc;
+  height: 228px;
+  margin-top: 2px;
+}
+
+.race-course ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 52px 0 0 5px; 
+}
+
+.horse {
+  width: 30px;
+  height: 28px;
+}
+
+.horse img {
+  width: 100%;
+  height: auto;
+}
+
 .betslip-buttons,
 .betslip-message {
 	display: none;
@@ -12,3 +36,4 @@ html {
 .show {
 	display: block;
 }
+
