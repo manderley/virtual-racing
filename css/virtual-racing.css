@@ -23,7 +23,7 @@ header h1 {
 }
 
 .main-content {
-	width: 860px;
+	width: 880px;
 	padding: 0 20px;
 	margin: 0 auto;
 }
@@ -34,7 +34,7 @@ header h1 {
 }
 
 .betslip {
-	width: 200px;
+	width: 220px;
 	min-height: 206px;
 	margin-left: 20px;
 	float: left;
@@ -60,22 +60,33 @@ header h1 {
 	
 }
 
+.selection-number {
+	font-weight: bold;
+	padding-right: 5px;
+}
+
 .selection-name {
-	
+	padding-right: 5px;
 }
 
 .selection-price {
 	color: #298e02;
+	padding-right: 5px;
 }
 
 .selection-stake {
-	width: 50px;
+	width: 40px;
 }
 
 .selection-delete {
 	padding-left: 5px;
 	color: red;
 	cursor: pointer;
+}
+
+.selection-potential-win-amount {
+	padding-left: 5px;
+	font-weight: bold;
 }
 
 fieldset { 
@@ -135,6 +146,11 @@ ul, ol {
 	background: #298e02;
 	border-color: #298e02;
 	color: #fff;
+}
+
+.display-winner {
+	font-weight: bold;
+	font-size: 1.5em;
 }
 
 .betslip-buttons,
