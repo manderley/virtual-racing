@@ -254,7 +254,7 @@ var betslip = (function() {
 
 	var stakeMessage = 'Enter a stake and then place your bets. The stake must be a whole number. If it includes decimal places it will be rounded down to the nearest whole number.';
 	var stakeErrorMessage = 'Please enter a valid stake amount for each selection.';
-	var fundsErrorMessage = 'You do not have sufficient funds. Please make sure your total bets amount does not exceed your wallet balance.';
+	var fundsErrorMessage = 'You do not have sufficient funds. Please make sure your total bet amount does not exceed your wallet balance.';
 	var betsPlacedMessage = 'Your bets have been placed. Your selections are listed below. Please click on the "Start Race" button to start the race. Good luck!';
 	
 	var selectionsPlaced = [];
@@ -263,38 +263,65 @@ var betslip = (function() {
 	var totalBetAmount = 0;
 	var validInput = true;
 
+	// temporary method, delete when finished
+	betslip.getSelections = function() {
+		console.log(selections);
+	}
+
 	function Selection(id, name, price) {
 		this.id = id;
+		this.elementId = 'selection-' + this.id;
 		this.name = name;
 		this.price = price;
+		this.value = 0;
+		this.potentialWin = 0;
+		this.selectionContainer;
+		this.nameElement;
+		this.priceElement;
+		this.inputElement;
+		this.removeElement;
 
+		// display selection in betslip
 		this.display = function() {
-			var selectionContainer = document.createElement('li');
-			selectionContainer.setAttribute('id', 'selection-' + this.id);
-			selectionContainer.setAttribute('class', 'betslip-selection');
+			this.selectionContainer = document.createElement('li');
+			this.selectionContainer.setAttribute('id', this.elementId);
+			this.selectionContainer.setAttribute('class', 'betslip-selection');
 
-			var nameElement = utils.createTextElement('label', 'selection-name', this.name);
-			nameElement.setAttribute('for', this.id);
-			var priceElement = utils.createTextElement('span', 'selection-price', this.price);
-			var inputElement = utils.createTextElement('input', 'selection-stake');
-			inputElement.setAttribute('type', 'number');
-			inputElement.setAttribute('min', '1');
-			inputElement.setAttribute('step', '1');
-			inputElement.setAttribute('id', this.id);
-			var removeElement = utils.createTextElement('span', 'selection-delete', 'x');
+			this.nameElement = utils.createTextElement('label', 'selection-name', this.name);
+			this.nameElement.setAttribute('for', this.id);
+			this.priceElement = utils.createTextElement('span', 'selection-price', this.price);
+			this.inputElement = utils.createTextElement('input', 'selection-stake');
+			this.inputElement.setAttribute('type', 'number');
+			this.inputElement.setAttribute('min', '1');
+			this.inputElement.setAttribute('step', '1');
+			this.inputElement.setAttribute('id', this.id);
+			this.removeElement = utils.createTextElement('span', 'selection-delete', 'x');
 
-			selectionContainer.appendChild(nameElement);
-			selectionContainer.appendChild(priceElement);
-			selectionContainer.appendChild(inputElement);
-			selectionContainer.appendChild(removeElement);
+			this.selectionContainer.appendChild(this.nameElement);
+			this.selectionContainer.appendChild(this.priceElement);
+			this.selectionContainer.appendChild(this.inputElement);
+			this.selectionContainer.appendChild(this.removeElement);
 
-			removeElement.onclick = (function(selection) {
+			this.removeElement.onclick = (function(selection) {
 				return function() {
 					removeSelection(selection);
 				}
 			})(this);
 
-			return selectionContainer;
+			return this.selectionContainer;
+		};
+
+		// update display after bet has been placed
+		this.updateDisplay = function() {
+			// - remove delete button
+			// - disable input field
+			// - display potential win amount
+			this.selectionContainer.removeChild(this.removeElement);
+			this.inputElement.setAttribute('disabled', 'disabled');
+			var potentialWinLabel = utils.createTextElement('span', 'selection-potential-win-label', 'Potential win amount:');
+			var potentialWinAmount = utils.createTextElement('span', 'selection-potential-win-amount', this.potentialWin);
+			this.selectionContainer.appendChild(potentialWinLabel);
+			this.selectionContainer.appendChild(potentialWinAmount);
 		};
 
 	}
@@ -374,7 +401,6 @@ var betslip = (function() {
 	}
 
 	function validateBets() {
-		//console.log('validating bets');
 
 		// if all inputs are valid, check total amount against wallet balance
 		// if balance is sufficient, place bets and update wallet balance
@@ -416,14 +442,18 @@ var betslip = (function() {
 
 		// update selections array with potential win value
 		for (var i = 0; i < selections.length; i++) {
+			// create method in Selection
 			var potentialWin = calculatePotentialWin(selections[i].price, selections[i].value);
 			selections[i].potentialWin = potentialWin;
+
+			selections[i].updateDisplay();
 		}
 
 		// change display of selections in betslip:
 		// - remove delete button
 		// - disable input field
 		// - display potential win amount
+
 
 	}
 
