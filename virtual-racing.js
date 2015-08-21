@@ -70,6 +70,12 @@ var wallet = (function() {
 		processNewBalance(betTotal);
 	};
 
+	wallet.addWin = function(amount) {
+		var newBalance = getBalance() + amount;
+		updateWallet(newBalance);
+		displayBalance(newBalance);
+	};
+
 	wallet.init = function() {
 		initialiseWallet();
 	};
@@ -265,6 +271,8 @@ var betslip = (function() {
 	var stakeErrorMessage = 'Please enter a valid stake amount for each selection.';
 	var fundsErrorMessage = 'You do not have sufficient funds. Please make sure your total bet amount does not exceed your wallet balance.';
 	var betsPlacedMessage = 'Your bets have been placed. Your selections are listed below.<br/><br/>Please click on the <strong>"Start Race"</strong> button to start the race. Good luck!';
+	var raceSuccessfulMessage = 'Congratulations! Your horse won and your winnings have been added to your available funds.'
+	var raceUnsuccessfulMessage = 'Sorry, your horse didn\'t win.'
 	
 	var selectionsPlaced = [];
 	var selections = [];
@@ -528,6 +536,23 @@ var betslip = (function() {
 		}
 	};
 
+	betslip.processOutcome = function(winner) {
+		var outcomeMessage = raceUnsuccessfulMessage;
+		
+		// if winner is among betslip selections:
+		// - get win amount and add to wallet balance
+		// - change value of outcomeMessage to successful
+		for (var i = 0; i < selections.length; i++) {
+			if (selections[i].number === winner) {
+				var winAmount = selections[i].potentialWin;
+				wallet.addWin(winAmount);
+				outcomeMessage = raceSuccessfulMessage;
+			}
+		}
+
+		showMessage(outcomeMessage);
+	};
+
 	betslip.init = function() {
 		getBetslipElements();
 	}
@@ -652,6 +677,7 @@ var raceEvent = (function() {
 	function handleRaceEnd(winner) {
 		displayWinner(winner);
 		raceEvent.hideStartButton();
+		betslip.processOutcome(winner);
 	}
 
 	function start() {
