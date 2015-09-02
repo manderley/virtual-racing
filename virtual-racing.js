@@ -153,6 +153,15 @@ var raceData = (function() {
 	  httpRequest.send(null);
 	}
 
+	function disableSelection(selectionButton) {
+		// disable button
+		// as dynamic disabled state doesn't persist after page refresh 
+		// (except in Firefox), using CSS to simulate visual disabled effect
+		// and setting onclick handler to null
+		selectionButton.classList.add('disabled');
+		selectionButton.onclick = null;
+	}
+
 	function Race(race) {
 		this.name = race.name;
 		this.runners = [];
@@ -234,14 +243,15 @@ var raceData = (function() {
 		var selectedRunner = document.getElementById('runner-' + id);
 		selectedRunner.classList.add('selected');
 
-		// disable button
-		// as dynamic disabled state doesn't persist after page refresh 
-		// (except in Firefox), using CSS to simulate visual disabled effect
-		// and setting onclick handler to null 
-		button.classList.add('disabled');
-		button.onclick = null;
-
+		disableSelection(button);
 	};
+
+	raceData.disableSelections = function() {
+		var selectionButtons = document.getElementsByClassName('runner-bet-button');
+		for (var i = 0; i < selectionButtons.length; i++) {
+			disableSelection(selectionButtons[i]);
+		}
+	}
 
 	raceData.init = function() {
 		getRaceData();
@@ -454,6 +464,7 @@ var betslip = (function() {
 
 		removeButtons();
 		raceEvent.showStartButton();
+		raceData.disableSelections();
 
 	}
 
