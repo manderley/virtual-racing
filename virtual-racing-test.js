@@ -10,16 +10,10 @@ var testSuite = (function() {
 
     var initialTestBalance = null;
 
-    if (localStorage.getItem('wallet')) {
-      initialTestBalance = localStorage.getItem('wallet');
-      localStorage.removeItem('wallet');
-    }
-
     // test init
-    testWallet.init()
+    testWallet.init(testLocalStorage);
 
     assertEquals(testWallet.returnBalance(), 390, 'Checking initial wallet after init');
-    assertEquals(testWallet.returnBalance(), 450, 'Testing the test. This should FAIL');
     assertEquals(balanceContainerElement.innerHTML, '390 GC', 'Check display wallet after init');
 
     // test add bet
@@ -27,17 +21,6 @@ var testSuite = (function() {
 
     assertEquals(testWallet.returnBalance(), 240, 'Checking initial wallet after update');
     assertEquals(balanceContainerElement.innerHTML, '240 GC', 'Check display wallet after update');
-
-    // test localStorage update
-    var storedValue = JSON.parse(localStorage.getItem('wallet')).balance;
-    assertEquals(storedValue, 240, 'Checking storing new value of balance in local storage after update');
-
-    console.log("End wallet test");
-    if (initialTestBalance !== null) {
-      console.log("Resetting wallet to original state: " + initialTestBalance);
-      localStorage.setItem('wallet', initialTestBalance);
-        testWallet.init(); // sets the display to the original value
-      }
   };
 
   testSuite.betslip = function(testBetslip) {
@@ -81,4 +64,26 @@ var testSuite = (function() {
     }
   }
   return testSuite;
+})();
+
+// mock of raceLocalStorage
+var testLocalStorage = (function() {
+
+  var testLocalStorage = {};
+
+  var testValues = {};
+
+  testLocalStorage.get = function(key, defaultValue) {
+    if (testValues[key]) {
+      return testValues[key];
+    } 
+    return defaultValue;
+  };
+
+  testLocalStorage.put = function(key, valueObject) {
+    testValues[key] = valueObject;
+  };
+
+  return testLocalStorage;
+
 })();

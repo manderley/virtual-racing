@@ -1,65 +1,41 @@
 "use strict";
-
 var wallet = (function() {
 
 	var wallet = {};
 
-	var initialBalance = 390;
+	var initialBalance = {'balance': 390};
 	var currency = 'GC'; // Gold Coins
 	var balanceContainer;
 
-	// on loading page, check if wallet is already in storage
-	// if it is, display the balance
-	// if it isn't, create wallet and display the balance
-	function initialiseWallet() {
-		balanceContainer = document.querySelector('.wallet-balance');
+	var storage;
 
-		if (!localStorage.getItem('wallet')) {
-			createWallet(initialBalance);
-		}
+	function initialiseWallet(abstractStorage) {
+		storage = abstractStorage;
+		balanceContainer = document.querySelector('.wallet-balance');
 		displayBalance();
 	}
-	
-	function createWallet(initialBalance) {
-		var wallet = {
-			balance: initialBalance
-		}
-		localStorage.setItem('wallet', JSON.stringify(wallet));
-	}
 
-	// newBalance will only be passed if updating balance after placing bet
-	function displayBalance(newBalance) {
-		var balance = newBalance ? newBalance : getBalance();
-		var balanceText = balance + ' ' + currency;
+	function displayBalance() {
+		var balanceText = getBalance() + ' ' + currency;
 		balanceContainer.innerHTML = balanceText;
 	}
 
 	function getBalance() {
-		// check if it's in local storage, otherwise use initialBalance
-		var balance = initialBalance;
-		
-		if (localStorage.getItem('wallet')) {
-			var wallet = JSON.parse(localStorage.getItem('wallet'));
-			if (wallet.balance) {
-				balance = wallet.balance;
-			}
-		}
-
-		return balance;
+		return storage.get('wallet', initialBalance)['balance'];
 	}
 
 	function updateWallet(newBalance) {
 		var wallet = {
 			balance: newBalance
 		};
-		localStorage.setItem('wallet', JSON.stringify(wallet));
+		storage.put('wallet', wallet);
 	}
 
 	function processNewBalance(betTotal) {
 		// calculate new balance, update wallet and display new balance on page
 		var newBalance = getBalance() - betTotal;
 		updateWallet(newBalance);
-		displayBalance(newBalance);
+		displayBalance();
 	}
 
 	wallet.returnBalance = function() {
@@ -73,11 +49,11 @@ var wallet = (function() {
 	wallet.addWin = function(amount) {
 		var newBalance = getBalance() + amount;
 		updateWallet(newBalance);
-		displayBalance(newBalance);
+		displayBalance();
 	};
 
-	wallet.init = function() {
-		initialiseWallet();
+	wallet.init = function(abstractStorage) {
+		initialiseWallet(abstractStorage);
 	};
 
 	Object.freeze(wallet);
@@ -731,6 +707,25 @@ var raceEvent = (function() {
 
 })();
 
+var raceLocalStorage = (function() {
+
+	var raceLocalStorage = {};
+
+	raceLocalStorage.get = function(key, defaultValue) {
+		if (localStorage.getItem(key)) {
+			return JSON.parse(localStorage.getItem(key));
+		} 
+		return defaultValue;
+	};
+
+	raceLocalStorage.put = function(key, valueObject) {
+		localStorage.setItem(key, JSON.stringify(valueObject));
+	};
+
+	return raceLocalStorage;
+
+})();
+
 var utils = (function() {
 
 	var utils = {};
@@ -752,7 +747,7 @@ var utils = (function() {
 })();
 
 window.onload = function() {
-	wallet.init();
+	wallet.init(raceLocalStorage);
 	raceData.init();
 	betslip.init();
 	raceEvent.init();
