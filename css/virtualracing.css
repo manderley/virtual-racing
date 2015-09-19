@@ -1,6 +1,10 @@
+:root {
+	--mainColor: rgb(77, 77, 77);
+}
+
 html {
 	font-family: 'Helvetica Neue', Arial, sans-serif;
-	color: rgb(77, 77, 77);
+	color: var(--mainColor);
 	font-size: 14px;
 	text-align: center;
 	box-sizing: border-box;
