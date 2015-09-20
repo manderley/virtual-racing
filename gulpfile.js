@@ -16,7 +16,7 @@ gulp.task('styles', function() {
 
   return gulp.src('./css/main.css')
     .pipe(postcss(processors))
-    .pipe(gulp.dest('./dest'));
+    .pipe(gulp.dest('./dest/css'));
 
 });
 
